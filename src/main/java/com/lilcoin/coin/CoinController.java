@@ -25,15 +25,8 @@ public class CoinController {
   @PostMapping("/increase")
   public ResponseEntity<Boolean> increase(HttpServletRequest request) {
     String userAgent = request.getHeader("User-Agent");
-    if (userAgent == null) {
-      throw new DeviceNotAllowedException("Invalid device");
-    }
-
-    Parser parser = new Parser();
-    Client client = parser.parse(userAgent);
-
-    String device = client.device.family;
-    if (!device.equalsIgnoreCase("Mobile") && !device.equalsIgnoreCase("Tablet")) {
+    if (userAgent == null || !userAgent.toLowerCase().contains("mobile") && !userAgent.toLowerCase().contains("tablet")) {
+      System.out.println("Invalid device: " + userAgent);
       throw new DeviceNotAllowedException("Invalid device");
     }
 
