@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.alibou</groupId>
-	<artifactId>security</artifactId>
+	<artifactId>lilcoin</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>security</name>
 	<description>Demo project for Spring Boot</description>
@@ -75,6 +75,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>com.github.ua-parser</groupId>
+            <artifactId>uap-java</artifactId>
+            <version>1.6.1</version>
+        </dependency>
 	</dependencies>
 
 	<build>
