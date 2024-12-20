@@ -24,7 +24,7 @@ application:
         expiration: 604800000 # 7 days
 server:
   address:
-    62.164.220.205
+    192.168.0.103
   port: 8080
 
 logging:
