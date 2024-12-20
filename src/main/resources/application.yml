@@ -36,3 +36,6 @@ logging:
       messaging:
         simp: DEBUG
 
+bot:
+  name: Lilcoin1_bot
+  token: 7113595834:AAEl2QvrT1kv-fJrQaTqcZ9vIqKaOYN7paY
