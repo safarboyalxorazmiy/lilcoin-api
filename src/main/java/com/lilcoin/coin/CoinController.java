@@ -13,27 +13,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ua_parser.Parser;
-import ua_parser.Client;
-
 @RestController
 @RequestMapping("/coin")
 @RequiredArgsConstructor
 public class CoinController {
   private final CoinDateService coinDateService;
 
-  @PostMapping("/increase")
-  public ResponseEntity<Boolean> increase(HttpServletRequest request) {
-    String userAgent = request.getHeader("User-Agent");
-    if (userAgent == null || !userAgent.toLowerCase().contains("mobile") && !userAgent.toLowerCase().contains("tablet")) {
-      System.out.println("Invalid device: " + userAgent);
-      throw new DeviceNotAllowedException("Invalid device");
-    }
-
-    return ResponseEntity.ok(
-      coinDateService.increase(getUser().getId())
-    );
-  }
+//  @PostMapping("/increase")
+//  public ResponseEntity<Boolean> increase(HttpServletRequest request) {
+//    String userAgent = request.getHeader("User-Agent");
+//    if (userAgent == null || !userAgent.toLowerCase().contains("mobile") && !userAgent.toLowerCase().contains("tablet")) {
+//      System.out.println("Invalid device: " + userAgent);
+//      throw new DeviceNotAllowedException("Invalid device");
+//    }
+//
+//    return ResponseEntity.ok(
+//      coinDateService.increase(getUser().getId())
+//    );
+//  }
 
   @GetMapping("/info")
   public ResponseEntity<Long> getInfo() {

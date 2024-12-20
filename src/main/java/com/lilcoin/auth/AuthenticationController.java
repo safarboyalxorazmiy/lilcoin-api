@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -20,24 +17,30 @@ public class AuthenticationController {
 
   @PostMapping("/register")
   public ResponseEntity<AuthenticationResponse> register(
-      @RequestBody RegisterRequest request
+    @RequestBody RegisterRequest request
   ) {
     return ResponseEntity.ok(service.register(request));
   }
+
   @PostMapping("/authenticate")
   public ResponseEntity<AuthenticationResponse> authenticate(
-      @RequestBody AuthenticationRequest request
+    @RequestBody AuthenticationRequest request
   ) {
     return ResponseEntity.ok(service.authenticate(request));
   }
 
+  @GetMapping("/authenticate/{username}")
+  public ResponseEntity<String> authenticateByUsername(
+    @PathVariable String username
+  ) {
+    return ResponseEntity.ok(service.authenticateByUsername(username));
+  }
+
   @PostMapping("/refresh-token")
   public void refreshToken(
-      HttpServletRequest request,
-      HttpServletResponse response
+    HttpServletRequest request,
+    HttpServletResponse response
   ) throws IOException {
     service.refreshToken(request, response);
   }
-
-
 }

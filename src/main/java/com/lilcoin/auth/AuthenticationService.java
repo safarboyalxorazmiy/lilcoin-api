@@ -13,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  private final UserRepository userRepository;
 
   public AuthenticationResponse register(RegisterRequest request) {
     var user = User.builder()
@@ -111,5 +115,15 @@ public class AuthenticationService {
         new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
       }
     }
+  }
+
+  public String authenticateByUsername(String username) {
+    Optional<User> byEmail = userRepository.findByEmail(username + "@lilcoin1.ru");
+    if (byEmail.isEmpty()) {
+      throw new UsernameNotFoundException("USERNAME_NOT_FOUND");
+    }
+
+    List<Token> allValidTokenByUser = tokenRepository.findAllValidTokenByUser(byEmail.get().getId());
+    return allValidTokenByUser.get(0).getToken();
   }
 }
