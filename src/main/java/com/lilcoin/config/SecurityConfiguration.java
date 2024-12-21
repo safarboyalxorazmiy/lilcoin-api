@@ -21,8 +21,7 @@ import static com.lilcoin.user.Permission.MANAGER_CREATE;
 import static com.lilcoin.user.Permission.MANAGER_DELETE;
 import static com.lilcoin.user.Permission.MANAGER_READ;
 import static com.lilcoin.user.Permission.MANAGER_UPDATE;
-import static com.lilcoin.user.Role.ADMIN;
-import static com.lilcoin.user.Role.MANAGER;
+import static com.lilcoin.user.Role.*;
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -65,6 +64,7 @@ public class SecurityConfiguration {
           .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
           .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
           .requestMatchers("/ws/**").permitAll()
+          .requestMatchers("/coin/**").permitAll()
           .anyRequest()
           .authenticated()
       )
