@@ -52,4 +52,39 @@ public class LevelService {
     levelRepository.save(level);
     return true;
   }
+
+  public LevelInfoDTO getLevelInfo(Integer userId) {
+    Optional<LevelEntity> levelByUserId = levelRepository.findByUserId(userId);
+    if (levelByUserId.isEmpty()) {
+      LevelEntity level = new LevelEntity();
+      level.setUserId(userId);
+      level.setLevel(1);
+      levelRepository.save(level);
+
+      LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
+      levelInfoDTO.setLevelTitle("Beginner");
+      levelInfoDTO.setLevel(1);
+      levelInfoDTO.setLevelPrice(60000L);
+      return levelInfoDTO;
+    }
+
+    LevelEntity level = levelByUserId.get();
+    Optional<LevelTypeEntity> levelTypeByUserId =
+      levelTypeRepository.findById(level.getLevel() + 1);
+    if (levelTypeByUserId.isEmpty()) {
+      LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
+      levelInfoDTO.setLevelTitle("Beginner");
+      levelInfoDTO.setLevel(1);
+      levelInfoDTO.setLevelPrice(60000L);
+      return levelInfoDTO;
+    }
+
+    LevelTypeEntity levelType = levelTypeByUserId.get();
+
+    LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
+    levelInfoDTO.setLevelTitle(levelType.getLevelTitle());
+    levelInfoDTO.setLevel(levelType.getId());
+    levelInfoDTO.setLevelPrice(levelType.getLevelPrice());
+    return levelInfoDTO;
+  }
 }
