@@ -64,7 +64,7 @@ public class SecurityConfiguration {
           .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
           .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
           .requestMatchers("/ws/**").permitAll()
-          .requestMatchers("/coin/**").permitAll()
+          .requestMatchers("/coin/**").hasRole("USER")
           .anyRequest()
           .authenticated()
       )

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "users")
+@Table(name = "bot_user")
 public class BotUserEntity {
   @Id
   private Long chatId;

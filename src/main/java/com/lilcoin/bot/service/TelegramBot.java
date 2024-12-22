@@ -4,7 +4,6 @@ import com.lilcoin.auth.AuthenticationService;
 import com.lilcoin.bot.config.BotConfig;
 import com.lilcoin.bot.user.BotRole;
 import com.lilcoin.bot.user.BotUsersService;
-import com.lilcoin.user.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

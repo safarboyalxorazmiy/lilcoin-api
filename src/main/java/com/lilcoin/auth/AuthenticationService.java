@@ -1,6 +1,8 @@
 package com.lilcoin.auth;
 
 import com.lilcoin.config.JwtService;
+import com.lilcoin.level.LevelEntity;
+import com.lilcoin.level.LevelRepository;
 import com.lilcoin.token.Token;
 import com.lilcoin.token.TokenRepository;
 import com.lilcoin.token.TokenType;
@@ -31,6 +33,7 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final UserRepository userRepository;
+  private final LevelRepository levelRepository;
 
   public AuthenticationResponse register(RegisterRequest request) {
     var user = User.builder()
@@ -85,6 +88,11 @@ public class AuthenticationService {
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
     saveUserToken(savedUser, jwtToken);
+
+    LevelEntity level = new LevelEntity();
+    level.setLevel(1);
+    level.setUserId(user.getId());
+    levelRepository.save(level);
     return true;
   }
 

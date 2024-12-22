@@ -1,6 +1,6 @@
 package com.lilcoin.websocket;
 
-import com.lilcoin.coin.coinDate.CoinDateService;
+import com.lilcoin.coin.CoinService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -11,15 +11,15 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
 
-  private final CoinDateService coinDateService;
+  private final CoinService coinService;
 
-  public WebSocketConfig(CoinDateService coinDateService) {
-    this.coinDateService = coinDateService;
+  public WebSocketConfig(CoinService coinService) {
+    this.coinService = coinService;
   }
 
   @Bean
   public SimpleWebSocketHandler simpleWebSocketHandler() {
-    return new SimpleWebSocketHandler(coinDateService);
+    return new SimpleWebSocketHandler(coinService);
   }
 
 

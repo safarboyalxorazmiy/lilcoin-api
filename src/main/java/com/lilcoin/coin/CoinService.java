@@ -1,5 +1,7 @@
-package com.lilcoin.coin.coinDate;
+package com.lilcoin.coin;
 
+import com.lilcoin.coin.coinDate.CoinDateEntity;
+import com.lilcoin.coin.coinDate.CoinDateRepository;
 import com.lilcoin.user.User;
 import com.lilcoin.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +14,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CoinDateService {
+public class CoinService {
   private final CoinDateRepository coinDateRepository;
+  private final CoinRepository coinRepository;
   private final UserRepository userRepository;
 
   public Boolean increase(String username) {
@@ -51,6 +54,11 @@ public class CoinDateService {
   }
 
   public Long getInfo(Integer userId) {
-    return coinDateRepository.sumCoinByUserId(userId);
+    Optional<CoinEntity> byUserId = coinRepository.findByUserId(userId);
+    if (byUserId.isEmpty()) {
+      return 0L;
+    }
+
+    return byUserId.get().getCoin();
   }
 }

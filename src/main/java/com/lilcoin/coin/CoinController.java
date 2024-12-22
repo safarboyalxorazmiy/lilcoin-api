@@ -1,7 +1,5 @@
 package com.lilcoin.coin;
 
-import com.lilcoin.coin.coinDate.CoinDateService;
-import com.lilcoin.exception.DeviceNotAllowedException;
 import com.lilcoin.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/coin")
 @RequiredArgsConstructor
 public class CoinController {
-  private final CoinDateService coinDateService;
+  private final CoinService coinDateService;
 
 //  @PostMapping("/increase")
 //  public ResponseEntity<Boolean> increase(HttpServletRequest request) {
