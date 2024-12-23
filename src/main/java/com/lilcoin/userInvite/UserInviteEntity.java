@@ -1,4 +1,4 @@
-package com.lilcoin.userInviteLink;
+package com.lilcoin.userInvite;
 
 import com.lilcoin.user.User;
 import jakarta.persistence.*;
@@ -9,17 +9,22 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "user_invite_link")
-public class UserInviteLinkEntity {
+public class UserInviteEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String inviteLink;
-
   @Column(name = "user_id")
-  private Integer userId;
+  private Integer ownerId;
 
   @ManyToOne
   @JoinColumn(name = "user_id", insertable = false, updatable = false)
-  private User user;
+  private User owner;
+
+  @Column(name = "user_id")
+  private Integer friendId;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  private User friend;
 }

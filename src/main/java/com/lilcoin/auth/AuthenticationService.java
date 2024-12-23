@@ -72,10 +72,10 @@ public class AuthenticationService {
       .build();
   }
 
-  public Boolean registerIfNotExists(String firstName, String lastName, String username) {
+  public User registerIfNotExists(String firstName, String lastName, String username, Long botUserId) {
     var userByEmail = repository.findByEmail(username + "@lilcoin1.ru");
     if (userByEmail.isPresent()) {
-      return false;
+      return userByEmail.get();
     }
 
     var user = User.builder()
@@ -84,6 +84,7 @@ public class AuthenticationService {
       .email(username + "@lilcoin1.ru")
       .password(username)
       .role(Role.USER)
+      .botUserId(botUserId)
       .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
@@ -93,7 +94,8 @@ public class AuthenticationService {
     level.setLevel(1);
     level.setUserId(user.getId());
     levelRepository.save(level);
-    return true;
+
+    return user;
   }
 
   private void saveUserToken(User user, String jwtToken) {

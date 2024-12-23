@@ -4,6 +4,8 @@ import com.lilcoin.auth.AuthenticationService;
 import com.lilcoin.bot.config.BotConfig;
 import com.lilcoin.bot.user.BotRole;
 import com.lilcoin.bot.user.BotUsersService;
+import com.lilcoin.user.User;
+import com.lilcoin.userInvite.UserInviteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -31,15 +33,18 @@ public class TelegramBot extends TelegramLongPollingBot {
   private final BotConfig config;
   private final BotUsersService botUsersService;
   private final AuthenticationService authenticationService;
+  private final UserInviteService userInviteService;
 
   public TelegramBot(
     BotConfig config,
     BotUsersService botUsersService,
-    AuthenticationService authenticationService
+    AuthenticationService authenticationService,
+    UserInviteService userInviteService
   ) {
     this.config = config;
     this.botUsersService = botUsersService;
     this.authenticationService = authenticationService;
+    this.userInviteService = userInviteService;
 
     List<BotCommand> listOfCommands = new ArrayList<>();
     listOfCommands.add(new BotCommand("/start", "Boshlash"));
@@ -80,7 +85,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
               if (password.equals("Xp2s5v8y/B?E(H+KbPeShVmYq3t6w9z$C&F)J@NcQfTjWnZr4u7x!A%D*G-KaPdSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t6w9z$C&F)J@NcRfUjXn2r4u7x!A%D*G-Ka")) {
                 botUsersService.changeRole(chatId, BotRole.ROLE_ADMIN);
-                sendPhotoWithInlineButtons(update.getMessage());
+                executeStartCommand(update.getMessage());
                 return;
               }
               return;
@@ -88,7 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
             switch (messageText) {
               case "/start" -> {
-                sendPhotoWithInlineButtons(update.getMessage());
+                executeStartCommand(update.getMessage());
                 return;
               }
               case "/help" -> {
@@ -96,6 +101,9 @@ public class TelegramBot extends TelegramLongPollingBot {
                 return;
               }
               default -> {
+                if (messageText.startsWith("/start")) {
+                  executeStartCommandWithInviteLink(update.getMessage());
+                }
                 sendMessage(chatId, "Sorry, command was not recognized");
                 return;
               }
@@ -111,6 +119,63 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
   }
 
+  private void executeStartCommandWithInviteLink(Message message) {
+    new Thread(() -> {
+      try {
+        User user = authenticationService.registerIfNotExists(
+          message.getFrom().getFirstName(),
+          message.getFrom().getLastName(),
+          message.getFrom().getUserName(),
+          message.getFrom().getId()
+        );
+
+        String[] parts = message.getText().split(" ");
+        String ownerBotId = parts.length > 1 ? parts[1] : null;
+
+        userInviteService.create(ownerBotId, user.getId());
+
+        SendPhoto photo = new SendPhoto();
+        photo.setChatId(message.getChatId());
+        photo.setPhoto(new InputFile(new File("./wallpaper.jpg")));
+        photo.setCaption("Welcome to LilCoin! \uD83C\uDF89\n" +
+          "\n" +
+          "\uD83D\uDCB0 LilCoin is a mini app within the Telegram App, initially operating on a 'tap-to-earn' model, allowing users to earn coins by tapping a gold coin. \uD83E\uDE99\n" +
+          "\n" +
+          "✨ The concept behind the LilCoin Community is to present its native token as unique and distinct from other coins. \uD83C\uDF1F");
+        photo.setParseMode("Markdown");
+
+        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(InlineKeyboardButton.builder()
+          .text("Play Game 🚀")
+          .webApp(new WebAppInfo("https://lilcoin1.ru/"))
+          .build());
+        row1.add(InlineKeyboardButton.builder()
+          .text("Our Channel 📢")
+          .url("https://t.me/YOUR_CHANNEL_LINK")
+          .build());
+
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        row2.add(InlineKeyboardButton.builder()
+          .text("Invite a Friend 🤝")
+          .url("https://t.me/YOUR_INVITE_LINK")
+          .build());
+
+        keyboard.add(row1);
+        keyboard.add(row2);
+
+        inlineKeyboard.setKeyboard(keyboard);
+        photo.setReplyMarkup(inlineKeyboard);
+
+        execute(photo);
+      } catch (TelegramApiException e) {
+        e.printStackTrace();
+      }
+    }).start();
+  }
+
   public static String generateSecureRandomString(int length) {
     String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     SecureRandom secureRandom = new SecureRandom();
@@ -124,59 +189,56 @@ public class TelegramBot extends TelegramLongPollingBot {
     return stringBuilder.toString();
   }
 
-  private void sendPhotoWithInlineButtons(Message message) {
-    authenticationService.registerIfNotExists(
-      message.getFrom().getFirstName(),
-      message.getFrom().getLastName(),
-      message.getFrom().getUserName()
-    );
+  private void executeStartCommand(Message message) {
+    new Thread(() -> {
+      try {
+        authenticationService.registerIfNotExists(
+          message.getFrom().getFirstName(),
+          message.getFrom().getLastName(),
+          message.getFrom().getUserName(),
+          message.getFrom().getId()
+        );
 
-    // Photo message
-    SendPhoto photo = new SendPhoto();
-    photo.setChatId(message.getChatId());
-    photo.setPhoto(new InputFile(new File("./wallpaper.jpg")));
-    photo.setCaption("Welcome to LilCoin! \uD83C\uDF89\n" +
-      "\n" +
-      "\uD83D\uDCB0 LilCoin is a mini app within the Telegram App, initially operating on a 'tap-to-earn' model, allowing users to earn coins by tapping a gold coin. \uD83E\uDE99\n" +
-      "\n" +
-      "✨ The concept behind the LilCoin Community is to present its native token as unique and distinct from other coins. \uD83C\uDF1F");
-    photo.setParseMode("Markdown");
+        SendPhoto photo = new SendPhoto();
+        photo.setChatId(message.getChatId());
+        photo.setPhoto(new InputFile(new File("./wallpaper.jpg")));
+        photo.setCaption("Welcome to LilCoin! \uD83C\uDF89\n" +
+          "\n" +
+          "\uD83D\uDCB0 LilCoin is a mini app within the Telegram App, initially operating on a 'tap-to-earn' model, allowing users to earn coins by tapping a gold coin. \uD83E\uDE99\n" +
+          "\n" +
+          "✨ The concept behind the LilCoin Community is to present its native token as unique and distinct from other coins. \uD83C\uDF1F");
+        photo.setParseMode("Markdown");
 
-    // Inline buttons
-    InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
-    List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
+        InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
+        List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
 
-    // First row of buttons
-    List<InlineKeyboardButton> row1 = new ArrayList<>();
-    row1.add(InlineKeyboardButton.builder()
-      .text("Play Game 🚀")
-      .webApp(new WebAppInfo("https://lilcoin1.ru/"))
-      .build());
-    row1.add(InlineKeyboardButton.builder()
-      .text("Our Channel 📢")
-      .url("https://t.me/YOUR_CHANNEL_LINK")
-      .build());
+        List<InlineKeyboardButton> row1 = new ArrayList<>();
+        row1.add(InlineKeyboardButton.builder()
+          .text("Play Game 🚀")
+          .webApp(new WebAppInfo("https://lilcoin1.ru/"))
+          .build());
+        row1.add(InlineKeyboardButton.builder()
+          .text("Our Channel 📢")
+          .url("https://t.me/YOUR_CHANNEL_LINK")
+          .build());
 
-    // Second row of buttons
-    List<InlineKeyboardButton> row2 = new ArrayList<>();
-    row2.add(InlineKeyboardButton.builder()
-      .text("Invite a Friend 🤝")
-      .url("https://t.me/YOUR_INVITE_LINK")
-      .build());
+        List<InlineKeyboardButton> row2 = new ArrayList<>();
+        row2.add(InlineKeyboardButton.builder()
+          .text("Invite a Friend 🤝")
+          .url("https://t.me/YOUR_INVITE_LINK")
+          .build());
 
-    // Add rows to keyboard
-    keyboard.add(row1);
-    keyboard.add(row2);
+        keyboard.add(row1);
+        keyboard.add(row2);
 
-    inlineKeyboard.setKeyboard(keyboard);
-    photo.setReplyMarkup(inlineKeyboard);
+        inlineKeyboard.setKeyboard(keyboard);
+        photo.setReplyMarkup(inlineKeyboard);
 
-    try {
-      // Execute the photo message
-      execute(photo);
-    } catch (TelegramApiException e) {
-      e.printStackTrace();
-    }
+        execute(photo);
+      } catch (TelegramApiException e) {
+        e.printStackTrace();
+      }
+    }).start();
   }
 
   private void helpCommandReceived(long chatId, String firstName) {

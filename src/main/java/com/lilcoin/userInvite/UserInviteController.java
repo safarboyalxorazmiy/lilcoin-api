@@ -1,4 +1,4 @@
-package com.lilcoin.userInviteLink;
+package com.lilcoin.userInvite;
 
 import com.lilcoin.user.User;
 import lombok.RequiredArgsConstructor;
@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/invite/link")
+@RequestMapping("/invite")
 @RequiredArgsConstructor
-public class UserInviteLinkController {
-  private final UserInviteLinkService userInviteLinkService;
+public class UserInviteController {
+  private final UserInviteService userInviteService;
 
-  @GetMapping("/get")
+  @GetMapping("/link/get")
   public ResponseEntity<String> getInviteLink() {
-    return ResponseEntity.ok(userInviteLinkService.getInviteLinkByUserId(getUser().getId()));
+    return ResponseEntity.ok(userInviteService.getInviteLinkByUserId(getUser().getId()));
   }
 
   private User getUser() {
