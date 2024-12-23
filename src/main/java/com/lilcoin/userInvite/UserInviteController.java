@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/invite")
 @RequiredArgsConstructor
@@ -18,6 +20,11 @@ public class UserInviteController {
   @GetMapping("/link/get")
   public ResponseEntity<String> getInviteLink() {
     return ResponseEntity.ok(userInviteService.getInviteLinkByUserId(getUser().getId()));
+  }
+
+  @GetMapping("/friends/list")
+  public ResponseEntity<List<FriendInfoDTO>> getFriendsList() {
+    return ResponseEntity.ok(userInviteService.getFriendList(getUser().getId()));
   }
 
   private User getUser() {
