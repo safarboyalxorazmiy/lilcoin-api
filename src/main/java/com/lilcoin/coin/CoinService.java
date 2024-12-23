@@ -2,6 +2,8 @@ package com.lilcoin.coin;
 
 import com.lilcoin.coin.coinDate.CoinDateEntity;
 import com.lilcoin.coin.coinDate.CoinDateRepository;
+import com.lilcoin.level.LevelEntity;
+import com.lilcoin.level.LevelRepository;
 import com.lilcoin.user.User;
 import com.lilcoin.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class CoinService {
   private final CoinDateRepository coinDateRepository;
   private final CoinRepository coinRepository;
   private final UserRepository userRepository;
+  private final LevelRepository levelRepository;
 
   public Boolean increase(String username) {
     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -32,9 +35,17 @@ public class CoinService {
 
     List<CoinDateEntity> byDateAndUserId =
       coinDateRepository.findByDateAndUserId(formattedDate, byEmail.get().getId());
+
+    Optional<LevelEntity> levelByUserId = levelRepository.findByUserId(byEmail.get().getId());
+    int coin = 1;
+    if (levelByUserId.isPresent()) {
+      LevelEntity level = levelByUserId.get();
+      coin = level.getLevel();
+    }
+
     if (byDateAndUserId.isEmpty()) {
       CoinDateEntity coinDateEntity = new CoinDateEntity();
-      coinDateEntity.setCoin(1);
+      coinDateEntity.setCoin(coin);
       coinDateEntity.setDate(formattedDate);
       coinDateEntity.setUserId(byEmail.get().getId());
 
@@ -48,7 +59,7 @@ public class CoinService {
       return false;
     }
 
-    coinDateEntity.setCoin(coinDateEntity.getCoin() + 1);
+    coinDateEntity.setCoin(coinDateEntity.getCoin() + coin);
     coinDateRepository.save(coinDateEntity);
     return true;
   }
