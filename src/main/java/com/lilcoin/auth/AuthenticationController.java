@@ -29,7 +29,7 @@ public class AuthenticationController {
     return ResponseEntity.ok(service.authenticate(request));
   }
 
-  @GetMapping("/authenticate/{username}")
+  @GetMapping("/get/token/{username}")
   public ResponseEntity<String> authenticateByUsername(
     @PathVariable String username
   ) {

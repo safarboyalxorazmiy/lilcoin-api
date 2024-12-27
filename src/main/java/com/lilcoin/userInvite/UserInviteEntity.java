@@ -14,17 +14,17 @@ public class UserInviteEntity {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "user_id")
+  @Column(name = "owner_id")
   private Integer ownerId;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "owner_id", insertable = false, updatable = false)
   private User owner;
 
-  @Column(name = "user_id")
+  @Column(name = "friend_id")
   private Integer friendId;
 
   @ManyToOne
-  @JoinColumn(name = "user_id", insertable = false, updatable = false)
+  @JoinColumn(name = "friend_id", insertable = false, updatable = false)
   private User friend;
 }

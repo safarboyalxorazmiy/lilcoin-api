@@ -33,17 +33,18 @@ public class CoinService {
       return false;
     }
 
-    List<CoinDateEntity> byDateAndUserId =
+    List<CoinDateEntity> coinDateByDateAndUserId =
       coinDateRepository.findByDateAndUserId(formattedDate, byEmail.get().getId());
+    Optional<CoinEntity> coinByUserId = coinRepository.findByUserId(byEmail.get().getId());
 
     Optional<LevelEntity> levelByUserId = levelRepository.findByUserId(byEmail.get().getId());
-    int coin = 1;
+    long coin = 1L;
     if (levelByUserId.isPresent()) {
       LevelEntity level = levelByUserId.get();
       coin = level.getLevel();
     }
 
-    if (byDateAndUserId.isEmpty()) {
+    if (coinDateByDateAndUserId.isEmpty() || coinByUserId.isEmpty()) {
       CoinDateEntity coinDateEntity = new CoinDateEntity();
       coinDateEntity.setCoin(coin);
       coinDateEntity.setDate(formattedDate);
@@ -51,16 +52,24 @@ public class CoinService {
 
       coinDateRepository.save(coinDateEntity);
 
+      CoinEntity coinEntity = new CoinEntity();
+      coinEntity.setCoin(coin);
+      coinEntity.setUserId(byEmail.get().getId());
+      coinRepository.save(coinEntity);
       return true;
     }
 
-    CoinDateEntity coinDateEntity = byDateAndUserId.get(0);
+    CoinDateEntity coinDateEntity = coinDateByDateAndUserId.get(0);
+    CoinEntity coinEntity = coinByUserId.get();
+
     if (coinDateEntity.getCoin() >= 30000) {
       return false;
     }
 
     coinDateEntity.setCoin(coinDateEntity.getCoin() + coin);
+    coinEntity.setCoin(coinEntity.getCoin() + coin);
     coinDateRepository.save(coinDateEntity);
+    coinRepository.save(coinEntity);
     return true;
   }
 
