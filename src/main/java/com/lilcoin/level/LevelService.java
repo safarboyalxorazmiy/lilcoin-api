@@ -70,7 +70,7 @@ public class LevelService {
 
     LevelEntity level = levelByUserId.get();
     Optional<LevelTypeEntity> levelTypeByUserId =
-      levelTypeRepository.findById(level.getLevel() + 1);
+      levelTypeRepository.findById(level.getLevel());
     if (levelTypeByUserId.isEmpty()) {
       LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
       levelInfoDTO.setLevelTitle("Beginner");

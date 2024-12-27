@@ -94,25 +94,22 @@ public class TelegramBot extends TelegramLongPollingBot {
             switch (messageText) {
               case "/start" -> {
                 executeStartCommand(update.getMessage());
-                return;
+                break;
               }
               case "/help" -> {
                 helpCommandReceived(chatId, update.getMessage().getChat().getFirstName());
-                return;
+                break;
               }
               default -> {
                 if (messageText.startsWith("/start")) {
                   executeStartCommandWithInviteLink(update.getMessage());
                 }
                 sendMessage(chatId, "Sorry, command was not recognized");
-                return;
+                break;
               }
             }
           }
 
-          if (role.equals(BotRole.ROLE_ADMIN)) {
-          } else if (role.equals(BotRole.ROLE_USER)) {
-          }
         }
       }
 
