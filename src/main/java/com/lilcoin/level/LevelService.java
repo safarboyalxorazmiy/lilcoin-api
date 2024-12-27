@@ -46,11 +46,13 @@ public class LevelService {
     if (subtractedCoin >= 0) {
       coinEntity.setCoin(subtractedCoin);
       coinRepository.save(coinEntity);
+
+      level.setLevel(level.getLevel() + 1);
+      levelRepository.save(level);
+      return true;
     }
 
-    level.setLevel(level.getLevel() + 1);
-    levelRepository.save(level);
-    return true;
+    return false;
   }
 
   public LevelInfoDTO getLevelInfo(Integer userId) {
