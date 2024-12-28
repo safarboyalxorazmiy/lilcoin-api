@@ -81,4 +81,18 @@ public class CoinService {
 
     return byUserId.get().getCoin();
   }
+
+  public Long getInfoByCurrentDate(Integer userId) {
+    SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+    Date currentDate = new Date();
+    String formattedDate = formatter.format(currentDate);
+
+    List<CoinDateEntity> byDateAndUserId = coinDateRepository.findByDateAndUserId(formattedDate, userId);
+    if (byDateAndUserId.isEmpty()) {
+      return 0L;
+    }
+
+    CoinDateEntity coinDateEntity = byDateAndUserId.get(0);
+    return coinDateEntity.getCoin();
+  }
 }

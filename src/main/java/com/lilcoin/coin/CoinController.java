@@ -42,6 +42,20 @@ public class CoinController {
     );
   }
 
+  @GetMapping("/info/by/current/date")
+  public ResponseEntity<Long> getInfoByCurrentDate() {
+    Long coinInfo = coinDateService.getInfoByCurrentDate(getUser().getId());
+
+    if (coinInfo == null) {
+      coinInfo = 0L;
+    }
+
+    System.out.println("Coins: " + coinInfo);
+    return ResponseEntity.ok(
+      coinInfo
+    );
+  }
+
   private User getUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return (User) authentication.getPrincipal();
