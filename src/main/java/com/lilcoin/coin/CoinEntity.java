@@ -21,5 +21,5 @@ public class CoinEntity {
   @JoinColumn(name = "user_id", insertable = false, updatable = false)
   private User user;
 
-  private Long coin;
+  private Double coin;
 }

@@ -29,11 +29,11 @@ public class CoinController {
 //  }
 
   @GetMapping("/info")
-  public ResponseEntity<Long> getInfo() {
-    Long coinInfo = coinDateService.getInfo(getUser().getId());
+  public ResponseEntity<Double> getInfo() {
+    Double coinInfo = coinDateService.getInfo(getUser().getId());
 
     if (coinInfo == null) {
-      coinInfo = 0L;
+      coinInfo = 0.0;
     }
 
     System.out.println("Coins: " + coinInfo);
@@ -43,11 +43,11 @@ public class CoinController {
   }
 
   @GetMapping("/info/by/current/date")
-  public ResponseEntity<Long> getInfoByCurrentDate() {
-    Long coinInfo = coinDateService.getInfoByCurrentDate(getUser().getId());
+  public ResponseEntity<Double> getInfoByCurrentDate() {
+    Double coinInfo = coinDateService.getInfoByCurrentDate(getUser().getId());
 
     if (coinInfo == null) {
-      coinInfo = 0L;
+      coinInfo = 0.0;
     }
 
     System.out.println("Coins: " + coinInfo);
