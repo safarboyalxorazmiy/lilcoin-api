@@ -1,18 +1,6 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/lilcoin_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  profiles:
+    active: dev
 
 application:
   security:
@@ -21,15 +9,6 @@ application:
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
-server:
-  address:
-    api-lilcoin.ru
-  port: 443
-  ssl:
-    enabled: true
-    keyStoreType: PKCS12
-    key-store: keystore.p12
-    key-store-password: Grechka4kg$
 
 logging:
   level:
