@@ -42,7 +42,7 @@ public class LevelService {
     }
 
     LevelTypeEntity levelType = byId.get();
-    long subtractedCoin = coinEntity.getCoin() - levelType.getLevelPrice();
+    Double subtractedCoin = coinEntity.getCoin() - levelType.getLevelPrice();
     if (subtractedCoin >= 0) {
       coinEntity.setCoin(subtractedCoin);
       coinRepository.save(coinEntity);
@@ -66,7 +66,7 @@ public class LevelService {
       LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
       levelInfoDTO.setLevelTitle("Beginner");
       levelInfoDTO.setLevel(1);
-      levelInfoDTO.setLevelPrice(60000L);
+      levelInfoDTO.setLevelPrice(60000.00);
       return levelInfoDTO;
     }
 
@@ -77,7 +77,7 @@ public class LevelService {
       LevelInfoDTO levelInfoDTO = new LevelInfoDTO();
       levelInfoDTO.setLevelTitle("Beginner");
       levelInfoDTO.setLevel(1);
-      levelInfoDTO.setLevelPrice(60000L);
+      levelInfoDTO.setLevelPrice(60000.00);
       return levelInfoDTO;
     }
 

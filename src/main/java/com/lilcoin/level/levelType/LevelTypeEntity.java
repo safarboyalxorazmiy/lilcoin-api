@@ -15,5 +15,5 @@ public class LevelTypeEntity {
 
   private String levelTitle;
 
-  private Long levelPrice;
+  private Double levelPrice;
 }

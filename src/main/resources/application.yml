@@ -1,4 +1,3 @@
-
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/lilcoin_db
@@ -24,8 +23,13 @@ application:
         expiration: 604800000 # 7 days
 server:
   address:
-    192.168.0.100
-  port: 8080
+    api-lilcoin.ru
+  port: 443
+  ssl:
+    enabled: true
+    keyStoreType: PKCS12
+    key-store: keystore.p12
+    key-store-password: Grechka4kg$
 
 logging:
   level:

@@ -8,7 +8,6 @@ import com.lilcoin.user.User;
 import com.lilcoin.user.UserRepository;
 import com.lilcoin.userInvite.UserInviteEntity;
 import com.lilcoin.userInvite.UserInviteRepository;
-import com.lilcoin.userInvite.UserInviteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

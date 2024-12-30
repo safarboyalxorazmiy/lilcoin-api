@@ -50,7 +50,7 @@ public class SecurityApplication {
         LevelTypeEntity levelType = new LevelTypeEntity();
         levelType.setId(i);
         levelType.setLevelTitle(level);
-        levelType.setLevelPrice(60000L);
+        levelType.setLevelPrice(60000.00);
         levelTypeRepository.save(levelType);
         i++;
       }

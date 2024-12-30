@@ -59,6 +59,7 @@ public class SecurityConfiguration {
         req.requestMatchers(WHITE_LIST_URL)
           .permitAll()
           .requestMatchers("/ws/**").permitAll()
+          .requestMatchers("/wss/**").permitAll()
 //          .requestMatchers("/**").permitAll()
           .anyRequest()
           .permitAll()
