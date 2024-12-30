@@ -73,18 +73,21 @@ public class AuthenticationService {
   }
 
   public User registerIfNotExists(String firstName, String lastName, String username, Long botUserId) {
-    var userByEmail = repository.findByEmail(username + "@lilcoin1.ru");
+    var userByEmail = repository.findByEmail(botUserId + "@lilcoin1.ru");
     if (userByEmail.isPresent()) {
-      return userByEmail.get();
+      User user = userByEmail.get();
+      user.setNewUser(false);
+      return user;
     }
 
     var user = User.builder()
       .firstname(firstName)
       .lastname(lastName)
-      .email(username + "@lilcoin1.ru")
+      .email(botUserId + "@lilcoin1.ru")
       .password(username)
       .role(Role.USER)
       .botUserId(botUserId)
+      .newUser(true)
       .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);

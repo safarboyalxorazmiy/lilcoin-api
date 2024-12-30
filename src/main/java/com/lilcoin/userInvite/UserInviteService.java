@@ -21,6 +21,14 @@ public class UserInviteService {
       return;
     }
 
+    if (byBotUserId.get().getId().equals(friendId)) {
+      return;
+    }
+
+    if (!userInviteRepository.findByFriendId(friendId).isEmpty()) {
+      return;
+    }
+
     UserInviteEntity userInviteEntity = new UserInviteEntity();
     userInviteEntity.setOwnerId(byBotUserId.get().getId());
     userInviteEntity.setFriendId(friendId);

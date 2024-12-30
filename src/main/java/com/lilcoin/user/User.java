@@ -33,6 +33,7 @@ public class User implements UserDetails {
   private String email;
   private String password;
   private Long botUserId;
+  private Boolean newUser;
 
   @Enumerated(EnumType.STRING)
   private Role role;
