@@ -1,10 +1,13 @@
 package com.lilcoin.bot.service;
 
 import com.lilcoin.auth.AuthenticationService;
+import com.lilcoin.bot.admin.AdminEntity;
+import com.lilcoin.bot.admin.AdminRepository;
 import com.lilcoin.bot.config.BotConfig;
 import com.lilcoin.bot.user.BotRole;
 import com.lilcoin.bot.user.BotUsersService;
 import com.lilcoin.user.User;
+import com.lilcoin.user.UserRepository;
 import com.lilcoin.userInvite.UserInviteService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,17 +37,20 @@ public class TelegramBot extends TelegramLongPollingBot {
   private final BotUsersService botUsersService;
   private final AuthenticationService authenticationService;
   private final UserInviteService userInviteService;
+  private final AdminRepository adminRepository;
 
   public TelegramBot(
     BotConfig config,
     BotUsersService botUsersService,
     AuthenticationService authenticationService,
-    UserInviteService userInviteService
+    UserInviteService userInviteService,
+    AdminRepository adminRepository
   ) {
     this.config = config;
     this.botUsersService = botUsersService;
     this.authenticationService = authenticationService;
     this.userInviteService = userInviteService;
+    this.adminRepository = adminRepository;
 
     List<BotCommand> listOfCommands = new ArrayList<>();
     listOfCommands.add(new BotCommand("/start", "Boshlash"));
@@ -84,8 +90,18 @@ public class TelegramBot extends TelegramLongPollingBot {
               String password = messageText.substring(7);
 
               if (password.equals("Xp2s5v8y/B?E(H+KbPeShVmYq3t6w9z$C&F)J@NcQfTjWnZr4u7x!A%D*G-KaPdSgUkXp2s5v8y/B?E(H+MbQeThWmYq3t6w9z$C&F)J@NcRfUjXn2r4u7x!A%D*G-Ka")) {
-                botUsersService.changeRole(chatId, BotRole.ROLE_ADMIN);
-                executeStartCommand(update.getMessage());
+                SendMessage sendMessage = new SendMessage();
+                sendMessage.setText("Welcome adminjon \uD83C\uDF89");
+                sendMessage.setChatId(update.getMessage().getChatId());
+
+                try {
+                  execute(sendMessage);
+                } catch (TelegramApiException ignored) {
+                }
+
+                AdminEntity adminEntity = new AdminEntity();
+                adminEntity.setAdminId(update.getMessage().getChatId());
+                adminRepository.save(adminEntity);
                 return;
               }
               return;
@@ -170,6 +186,24 @@ public class TelegramBot extends TelegramLongPollingBot {
     inlineKeyboard.setKeyboard(keyboard);
     photo.setReplyMarkup(inlineKeyboard);
 
+    if (user.getNewUser()) {
+      List<AdminEntity> all = adminRepository.findAll();
+      SendMessage sendMessage = new SendMessage();
+      sendMessage.setText(user.getOrder() + "-user qo'shildi \n" +
+        "\n" +
+        "profil nomi: " + user.getFirstname() + " " + user.getLastname() + "\n" +
+        "username: " + "@" + user.getPassword());
+      for (AdminEntity adminEntity : all) {
+        new Thread(() -> {
+          sendMessage.setChatId(adminEntity.getAdminId());
+          try {
+            execute(sendMessage);
+          } catch (TelegramApiException ignored) {
+          }
+        }).start();
+      }
+    }
+
     new Thread(() -> {
       try {
         execute(photo);
@@ -194,7 +228,7 @@ public class TelegramBot extends TelegramLongPollingBot {
   }
 
   private void executeStartCommand(Message message) {
-    authenticationService.registerIfNotExists(
+    User user = authenticationService.registerIfNotExists(
       message.getFrom().getFirstName(),
       message.getFrom().getLastName(),
       message.getFrom().getUserName(),
@@ -237,12 +271,28 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     inlineKeyboard.setKeyboard(keyboard);
     photo.setReplyMarkup(inlineKeyboard);
+    if (user.getNewUser()) {
+      List<AdminEntity> all = adminRepository.findAll();
+      SendMessage sendMessage = new SendMessage();
+      sendMessage.setText(user.getOrder() + "-user qo'shildi \n" +
+        "\n" +
+        "profil nomi: " + user.getFirstname() + " " + user.getLastname() + "\n" +
+        "username: " + "@" + user.getPassword());
+      for (AdminEntity adminEntity : all) {
+        new Thread(() -> {
+          sendMessage.setChatId(adminEntity.getAdminId());
+          try {
+            execute(sendMessage);
+          } catch (TelegramApiException ignored) {
+          }
+        }).start();
+      }
+    }
 
     new Thread(() -> {
       try {
         execute(photo);
-      } catch (TelegramApiException e) {
-        e.printStackTrace();
+      } catch (TelegramApiException ignored) {
       }
     }).start();
   }

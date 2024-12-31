@@ -1,13 +1,8 @@
 package com.lilcoin.user;
 
 import com.lilcoin.token.Token;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -34,6 +29,9 @@ public class User implements UserDetails {
   private String password;
   private Long botUserId;
   private Boolean newUser;
+
+  @Column(name = "_order")
+  private Long order;
 
   @Enumerated(EnumType.STRING)
   private Role role;

@@ -41,6 +41,7 @@ public class AuthenticationService {
       .lastname(request.getLastname())
       .email(request.getEmail())
       .password(passwordEncoder.encode(request.getPassword()))
+      .order(userRepository.count() + 1)
       .role(request.getRole())
       .build();
     var savedUser = repository.save(user);
@@ -88,6 +89,7 @@ public class AuthenticationService {
       .role(Role.USER)
       .botUserId(botUserId)
       .newUser(true)
+      .order(userRepository.count() + 1)
       .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
