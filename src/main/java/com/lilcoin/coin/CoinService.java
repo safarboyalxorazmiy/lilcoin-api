@@ -63,7 +63,7 @@ public class CoinService {
         CoinEntity coinEntity;
         if (byUserId.isEmpty()) {
           Optional<CoinEntity> check2 = coinRepository.findByUserId(ownerId);
-          if (check2.isEmpty()) {
+          if (check2.isPresent()) {
             return true;
           }
           coinEntity = new CoinEntity();
@@ -85,7 +85,7 @@ public class CoinService {
           CoinEntity coinEntity;
           if (byUserId.isEmpty()) {
             Optional<CoinEntity> check2 = coinRepository.findByUserId(ownerId);
-            if (check2.isEmpty()) {
+            if (check2.isPresent()) {
               return true;
             }
 
@@ -111,7 +111,7 @@ public class CoinService {
 
       if (coinByUserId.isEmpty()) {
         Optional<CoinEntity> check2 = coinRepository.findByUserId(byEmail.get().getId());
-        if (check2.isEmpty()) {
+        if (check2.isPresent()) {
           return true;
         }
 
