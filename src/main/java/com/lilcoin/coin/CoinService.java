@@ -62,6 +62,10 @@ public class CoinService {
 
         CoinEntity coinEntity;
         if (byUserId.isEmpty()) {
+          Optional<CoinEntity> check2 = coinRepository.findByUserId(ownerId);
+          if (check2.isEmpty()) {
+            return true;
+          }
           coinEntity = new CoinEntity();
           coinEntity.setCoin(coin * 0.05);
           coinEntity.setUserId(ownerId);
@@ -80,6 +84,11 @@ public class CoinService {
 
           CoinEntity coinEntity;
           if (byUserId.isEmpty()) {
+            Optional<CoinEntity> check2 = coinRepository.findByUserId(ownerId);
+            if (check2.isEmpty()) {
+              return true;
+            }
+
             coinEntity = new CoinEntity();
             coinEntity.setCoin(coin * 0.05);
             coinEntity.setUserId(ownerId);
@@ -92,7 +101,7 @@ public class CoinService {
       }
     }
 
-    if (coinDateByDateAndUserId.isEmpty() || coinByUserId.isEmpty()) {
+    if (coinDateByDateAndUserId.isEmpty()) {
       CoinDateEntity coinDateEntity = new CoinDateEntity();
       coinDateEntity.setCoin(coin);
       coinDateEntity.setDate(formattedDate);
@@ -100,10 +109,22 @@ public class CoinService {
 
       coinDateRepository.save(coinDateEntity);
 
-      CoinEntity coinEntity = new CoinEntity();
-      coinEntity.setCoin(coin);
-      coinEntity.setUserId(byEmail.get().getId());
-      coinRepository.save(coinEntity);
+      if (coinByUserId.isEmpty()) {
+        Optional<CoinEntity> check2 = coinRepository.findByUserId(byEmail.get().getId());
+        if (check2.isEmpty()) {
+          return true;
+        }
+
+        CoinEntity coinEntity = new CoinEntity();
+        coinEntity.setCoin(coin);
+        coinEntity.setUserId(byEmail.get().getId());
+        coinRepository.save(coinEntity);
+      } else {
+        CoinEntity coinEntity = coinByUserId.get();
+        coinEntity.setCoin(coinEntity.getCoin() + coin);
+        coinRepository.save(coinEntity);
+      }
+
       return true;
     }
 
